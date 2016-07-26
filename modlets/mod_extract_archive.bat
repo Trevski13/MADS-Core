@@ -1,24 +1,29 @@
 @echo off
-rem Requires 7z.exe
+
+REM Requires 7z.exe
+
+REM This modlet extracts a file to a specified directory
 
 call mod_flag_parsing %*
-call mod_flag_check /type string /flag file
-call mod_flag_check /type string /flag destination /default *
+call mod_flag_check /type file /flag file
+call mod_flag_check /type dir /flag directory /default .\
+call mod_flag_check /type dir /flag destination /default .\
+call mod_flag_check /type file /flag newname /default *
 
 setlocal EnableDelayedExpansion
 
 if exist "%programfiles%\7-zip\7z.exe" (
 	set "exeloc=%programfiles%\7-zip\7z.exe"
-	if %debug%==true echo DEBUG: Found 7z.exe in Program Files
+	if "[%debug%]"=="[true]" echo DEBUG: Found 7z.exe in Program Files
 ) else (
 	call s_which 7z.exe
 	if NOT "!_path!" == "" (
 		set "exeloc=7z.exe"
-		if %debug%==true echo DEBUG: Found 7z.exe in path location !_path!
+		if "[%debug%]"=="[true]" echo DEBUG: Found 7z.exe in path location !_path!
 	)
 	if exist 7z.exe (
 		set "exeloc=7z.exe"
-			if %debug%==true echo DEBUG: Found 7z.eze in the current directory
+			if "[%debug%]"=="[true]" echo DEBUG: Found 7z.eze in the current directory
 	)
 )
 
@@ -29,14 +34,17 @@ if not defined exeloc (
 	exit 1
 )
 
-echo Extracting %flag_file%...
-echo %~n0: Extracting %flag_file% to %flag_destination%  >> %temp%\updater.log
-"%exeloc%" x "%flag_file%" -o"%flag_destination%" -aoa | findstr /c:"Everything is" /c:"Error: "
-if ERRORLEVEL 1 (
-	call mod_tee error:  %errorlevel% /color 0C
-	set /a errorct+=1
-	pause
-) else (
-	call mod_tee "Extracted Sucessfully" /color 0A
-)
+echo Extracting %flag_directory%%flag_file%...
+echo %~n0: Extracting %flag_directory%%flag_file% to %flag_destination%%flag_newname%  >> %temp%\updater.log
+"%exeloc%" x "%flag_directory%%flag_file%" -o"%flag_destination%%flag_newname%" -aoa | findstr /c:"Everything is" /c:"Error: "
+call mod_error /error %errorlevel% /description File Extraction
+REM if ERRORLEVEL 1 (
+	REM rem call mod_tee error:  %errorlevel% /color 0C
+	REM rem set /a errorct+=1
+	REM rem pause
+REM ) else (
+	REM call mod_tee "Extracted Sucessfully" /color 0A
+REM )
 endlocal
+
+exit /b
