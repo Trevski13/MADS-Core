@@ -1,5 +1,9 @@
 @echo off
-rem Requires error_codes.txt
+
+REM Requires error_codes.txt
+
+REM This modlet handles errors and looks up error codes
+
 setlocal enabledelayedexpansion
 
 set speedhack=true
@@ -45,14 +49,15 @@ if [%speedhack%]==[false] (
 
 set "successes=0"
 
-rem determin if error
-rem simple version
+REM Determine if error
+REM Simple Version
 if %flag_error%==0 (
 	set is_error=false
 ) else (
 	set is_error=true
 )
 
+REM Complex Version
 echo\%successes%| findstr /r /i /c:"^%flag_error%$" /c:"^%flag_error%," /c:",%flag_error%$" /c:",%flag_error%," > nul 2>&1
 if NOT ERRORLEVEL 1 (
 	set is_error=false
@@ -66,7 +71,7 @@ if NOT ERRORLEVEL 1 (
 	set is_error=true
 )
 
-
+REM Handle the error
 if %is_error%==true (
 	if %flag_silent%==false (
 		if "[%flag_description%]"=="[ ]" (
@@ -110,6 +115,8 @@ if %is_error%==true (
 		)
 	)
 )
+
+REM Lookup Error Code
 if %flag_lookup%==true (
 	call s_which "error_codes.txt"
 
@@ -118,7 +125,7 @@ if %flag_lookup%==true (
 		set "txtloc=%_path%"
 		if %debug%==true echo DEBUG: Found error_codes.txt in path location %_path%
 	)
-	if exist msi_codes.txt (
+	if exist error_codes.txt (
 		set "txtloc=error_codes.txt"
 		if %debug%==true echo DEBUG: Found error_codes.txt in the current directory
 	)
