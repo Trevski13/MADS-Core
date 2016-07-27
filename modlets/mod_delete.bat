@@ -3,7 +3,7 @@
 REM This modlet deletes a file from a specified location if it exists
 
 call mod_flag_parsing %*
-call mod_flag_check /type string /flag file
+call mod_flag_check /type file /flag file
 call mod_flag_check /type string /flag name /defaultValue
 call mod_flag_check /type dir /flag directory /defaultValue .\
 

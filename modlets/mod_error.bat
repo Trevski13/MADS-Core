@@ -120,10 +120,10 @@ REM Lookup Error Code
 if %flag_lookup%==true (
 	call s_which "error_codes.txt"
 
-	if %debug%==true echo DEBUG: Search Results: %_path%
-	if NOT "%_path%" == "" (
-		set "txtloc=%_path%"
-		if %debug%==true echo DEBUG: Found error_codes.txt in path location %_path%
+	if %debug%==true echo DEBUG: Search Results: !_path!
+	if NOT "!_path!" == "" (
+		set "txtloc=!_path!"
+		if %debug%==true echo DEBUG: Found error_codes.txt in path location !_path!
 	)
 	if exist error_codes.txt (
 		set "txtloc=error_codes.txt"
@@ -155,12 +155,14 @@ if %flag_lookup%==true (
 	)
 	if %debug%==true echo DEBUG: Lookup Complete
 )
+if %is_error%==true (
+	if %flag_pause%==true (
+		call mod_pause
+	)
+	if %flag_quit%==true (
+		exit %errorct%
+	)
 
-if %flag_pause%==true (
-	call mod_pause
-)
-if %flag_quit%==true (
-	exit %errorct%
 )
 endlocal & set errorct=%errorct%
 exit /b

@@ -52,15 +52,16 @@ if "[%flag_args:~0,1%]"=="[ ]" (
 )
 
 start "" %wait% /d "%flag_workingdirectory%" "%flag_directory%%flag_file%" %flag_args%
-
-if ERRORLEVEL 1 (
-	if %errorlevel% NEQ 3010 (
-		call mod_tee Error: %errorlevel% /color 0C
-		set /a errorct+=1
-		call mod_pause
-	) else (
-		call mod_tee Done /color 0A
-	)
-) else (
-	call mod_tee Done /color 0A
-)
+call mod_error /error %errorlevel%
+REM if ERRORLEVEL 1 (
+	REM if %errorlevel% NEQ 3010 (
+		REM call mod_tee Error: %errorlevel% /color 0C
+		REM set /a errorct+=1
+		REM call mod_pause
+	REM ) else (
+		REM call mod_tee Done /color 0A
+	REM )
+REM ) else (
+	REM call mod_tee Done /color 0A
+REM )
+exit /b
