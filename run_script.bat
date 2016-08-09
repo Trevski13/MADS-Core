@@ -3,6 +3,15 @@ title MADS_init
 
 REM This script establishes a connection to the core file which then kicks off the deployment process
 
+REM Defaults:
+REM This section can be used to create a single file launcher without the need for a settings.ini file
+set drive_letter=
+set core_location=
+set username=
+set password=
+set room=
+set mode=
+
 REM Change to the script's directory
 cd /d %~dp0
 
@@ -13,7 +22,7 @@ if ERRORLEVEL 1 (
 	echo Failure: Current permission inadequate
 	REM Create elevate.vbs to get us admin
 	echo Set UAC = CreateObject^("Shell.Application"^) > %temp%\elevate.vbs
-	echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> %temp%\elevate.vbs
+	echo UAC.ShellExecute "%temp%\%~nx0", "", "", "runas", 1 >> %temp%\elevate.vbs
 	REM Test if network share
 	net use | findstr /C:%~d0 > nul
 	if NOT ERRORLEVEL 1 (
@@ -33,15 +42,6 @@ if ERRORLEVEL 1 (
 	echo Success: Administrative Permissions Confirmed
 	echo.
 )
-
-REM Defaults:
-REM This section can be used to create a single file launcher without the need for a settings.ini file
-set drive_letter=
-set core_location=
-set username=
-set password=
-set room=
-set mode=
 
 REM Load Settings:
 REM This section loads relevant data from the settings.ini file
