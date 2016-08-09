@@ -22,14 +22,18 @@ if ERRORLEVEL 1 (
 	echo Failure: Current permission inadequate
 	REM Create elevate.vbs to get us admin
 	echo Set UAC = CreateObject^("Shell.Application"^) > %temp%\elevate.vbs
-	echo UAC.ShellExecute "%temp%\%~nx0", "", "", "runas", 1 >> %temp%\elevate.vbs
+	echo UAC.ShellExecute WScript.Arguments^(0^), "", "", "runas", 1 >> %temp%\elevate.vbs
 	REM Test if network share
 	net use | findstr /C:%~d0 > nul
 	if NOT ERRORLEVEL 1 (
 		REM Network share confirmed
 		copy %~nx0 %temp%\%~nx0
+		copy settings.ini %temp%\settings.ini 2>nul
+		set location=%temp%\%~nx0
+	) else (
+		set location=%~f0
 	)
-	start "" /wait %SystemRoot%\System32\wscript.exe %temp%\elevate.vbs
+	call start "" /wait %SystemRoot%\System32\wscript.exe %temp%\elevate.vbs "%%location%%"
 	if ERRORLEVEL 1 (
 		echo Error Getting Admin, please launch manually
 		pause
@@ -37,7 +41,6 @@ if ERRORLEVEL 1 (
 	) else (
 		exit 0
 	)
-	
 ) else (
 	echo Success: Administrative Permissions Confirmed
 	echo.
