@@ -1,6 +1,9 @@
 @echo off
 setlocal enabledelayedexpansion
 rem Requires runfromprocess-x64.exe
+
+REM this modlet runs a file without administrative privileges
+
 call s_which runfromprocess-x64.exe 2>&1 > nul
 if "%_path%" == "" (
 	call mod_tee Error: runfromprocess-x64.exe not found /color 0C
@@ -48,6 +51,8 @@ if not exist %temp%\updater\%~n0\test_success (
 )
 
 call mod_flag_parsing %*
+call mod_help "%~dpnx0" && exit /b
+
 call mod_flag_check /type file /flag file
 call mod_flag_check /type string /flag name /defaultValue
 call mod_flag_check /type dir /flag directory /defaultValue .\

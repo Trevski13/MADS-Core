@@ -1,6 +1,10 @@
-if [%1]==[] (
+@echo off
+setlocal
+set "message=%*"
+if NOT defined message (
 	pause
-) else (
-	echo %~1
-	pause > nul
+	endlocal & exit /b
 )
+echo %message%
+pause > nul
+endlocal &exit /b

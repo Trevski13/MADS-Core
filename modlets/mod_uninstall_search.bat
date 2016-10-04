@@ -1,6 +1,11 @@
 @echo off
 setlocal enabledelayedexpansion
+
+REM Search for the uninstaller and run it.
+
 call mod_flag_parsing %*
+call mod_help "%~dpnx0" && exit /b
+
 call mod_flag_check /type string /flag name
 call mod_flag_check /type boolean /flag match-all /defaultValue false
 call mod_flag_check /type boolean /flag confirm /defaultValue false

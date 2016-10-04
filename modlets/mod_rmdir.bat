@@ -1,6 +1,11 @@
 @echo off
 setlocal
+
+REM This modlet removes a directory if it isn't already removed
+
 call mod_flag_parsing %*
+call mod_help "%~dpnx0" && exit /b
+
 call mod_flag_check /type dir /flag folder
 call mod_flag_check /type boolean /flag recurse /defaultValue false
 
@@ -25,3 +30,4 @@ if exist "%flag_folder%" (
 	call mod_tee Folder Doesn't Exist, Ignoring /color 0E
 )
 endlocal
+exit /b
