@@ -1,6 +1,11 @@
 @echo off
 setlocal enabledelayedexpansion
+
+REM This modlet runs the newest version of a file
+
 call mod_flag_parsing %*
+call mod_help "%~dpnx0" && exit /b
+
 call mod_flag_check /type file /flag file
 call mod_flag_check /type string /flag name /defaultValue
 call mod_flag_check /type dir /flag directory /defaultValue .\
