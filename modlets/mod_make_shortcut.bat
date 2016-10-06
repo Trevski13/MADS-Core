@@ -1,6 +1,11 @@
 @echo off
 rem Requires nircmd.exe
+
+REM This modlet creates a shortcut overwriting it if it doesn't exist
+
 call mod_flag_parsing %*
+call mod_help "%~dpnx0" && exit /b
+
 call mod_flag_check /type dir /flag destination-directory
 call mod_flag_check /type file /flag destination-file
 call mod_flag_check /type dir /flag shortcut-directory
@@ -17,7 +22,7 @@ if NOT "!_path!" == "" (
 )
 if exist nircmd.exe (
 	set "exeloc=nircmd.exe"
-		if %debug%==true echo DEBUG: Found nircmd.eze in the current directory
+		if %debug%==true echo DEBUG: Found nircmd.exe in the current directory
 )
 call mod_tee Making New Link
 call mod_log Link is located in "%flag_shortcut-directory%%flag_shortcut-name%" linking to "%flag_destination-directory%%flag_destination-file%" with arguments "%flag_arguments%" with icon %flag_icon-number% in "%flag_icon-directory%%flag_icon-file%"

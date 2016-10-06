@@ -176,7 +176,7 @@ if "[%debug%]"=="[true]" echo DEBUG: Directory Check
 if "[%type%]"=="[dir]" (
 	if "[%debug%]"=="[true]" echo DEBUG: Checking if valid file
 	if defined flag_%flag% (
-	echo !flag_%flag%!| findstr /V /R /I /C:"^[a-zA-Z]:\\.*$" > nul
+		echo !flag_%flag%!| findstr /V /R /I /C:"^[a-zA-Z]:\\.*$" > nul
 	)
 )
 
