@@ -10,6 +10,12 @@ if not exist "%temp%\MADS\built\" (
 )
 pushd %~dp1
 
+if not exist "%module%.ini" (
+	echo Internal Error: Couldn't find ini file in: %~dp1
+	pause
+	exit 1
+)
+
 if not exist "%temp%\MADS\built\%module%.bat" (
 	@(
 	echo/@echo off

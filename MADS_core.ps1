@@ -137,11 +137,13 @@ foreach ($i in $scripts) {
 	$exists = $FALSE
 	if (Test-Path $modules$i\$i.ini) {
 		if ((Test-Path ($extensions + "Shim.ps1")) -Or (Test-Path ($modlets + "Shim.ps1"))){
+			Set-Location $modules$i
 			$result = Start-Process cmd.exe -ArgumentList "/C title MADS_module: ", $i,"& Powershell.exe -ExecutionPolicy Bypass -File Shim.ps1 ", $i -Wait -PassThru
 			$exists = $TRUE
 			Set-Location (Split-Path $MyInvocation.MyCommand.Path)
 		}
 		ElseIf ((Test-Path ($extensions + "Shim.bat")) -Or (Test-Path ($modlets + "Shim.bat"))) {
+			Set-Location $modules$i
 			$result = Start-Process cmd.exe -ArgumentList "/C title MADS_module:", $i,"& Shim.bat", $i -Wait -PassThru
 			$exists = $TRUE
 			Set-Location (Split-Path $MyInvocation.MyCommand.Path)
