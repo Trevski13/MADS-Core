@@ -24,5 +24,5 @@ call mod_log Installing %flag_name% via %flag_file%
 if "[%debug%]"=="[true]" echo DEBUG: Installing...
 start "" /wait msiexec /i %flag_directory%%flag_file% %passive% %flag_args%
 call mod_error /error %errorlevel% /alternate-successes "3010,1605"
-endlocal
+endlocal & set errorct=%errorct%
 exit /b

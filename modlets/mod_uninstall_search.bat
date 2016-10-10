@@ -51,6 +51,7 @@ if %flag_match-all%==false (
 		mod_tee ERROR: No Matching Uninstallers Found /color 0E
 	)
 )
+endlocal & set errorct=%errorct%
 exit /b
 
 :uninstall

@@ -18,7 +18,7 @@ if exist room_%~2.ini (
 :: Log Setup
 echo %~n0: ================== Script Start ================== >> %temp%\updater.log
 
-echo %~n0: %~n0 Version: 1.6.3 >> %temp%\updater.log
+echo %~n0: %~n0 Version: 1.7 >> %temp%\updater.log
 echo %~n0: Computer Name: %computername% >> %temp%\updater.log
 echo %~n0: IP Addresses: >> %temp%\updater.log
 set ip_address_string="IPv4 Address"
@@ -138,8 +138,8 @@ for %%x in (%scripts%) do (
 	echo Start    : !date! @ !MODULESTARTTIME!
 	echo %~n0: Start    : !date! @ !MODULESTARTTIME! >> %temp%\updater.log
 	cd %%x
-	if exist %%x.bat (
-		start "MADS_module: %%x" /wait %%x.bat
+	if exist %%x.ini (
+		start "MADS_module: %%x" /wait Shim.bat %%x
 		if ERRORLEVEL 1 (
 			echo %%x module done with 1 or more errors
 			echo %~n0: %%x module done with 1 or more errors >> %temp%\updater.log
@@ -149,9 +149,21 @@ for %%x in (%scripts%) do (
 			echo %~n0: %%x module done >> %temp%\updater.log
 		)
 	) else (
-		echo %%x module not found
-		echo %~n0: %%x module not found >> %temp%\updater.log
-		set /a errorct+=1
+		if exist %%x.bat (
+			start "MADS_module: %%x" /wait %%x.bat
+			if ERRORLEVEL 1 (
+				echo %%x module done with 1 or more errors
+				echo %~n0: %%x module done with 1 or more errors >> %temp%\updater.log
+				set /a errorct+=1
+			) else (
+				echo %%x module done
+				echo %~n0: %%x module done >> %temp%\updater.log
+			)
+		) else (
+			echo %%x module not found
+			echo %~n0: %%x module not found >> %temp%\updater.log
+			set /a errorct+=1
+		)
 	)
 	cd ..
 	

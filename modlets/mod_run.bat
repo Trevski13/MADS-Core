@@ -20,7 +20,7 @@ if ERRORLEVEL 1 (
 	) else (
 		call mod_tee Done /color 0A
 	)
-	endlocal
+	echo. > nul & call endlocal ^& set errorct=%%errorct%%
 	exit /b
 )
 call mod_flag_parsing %*

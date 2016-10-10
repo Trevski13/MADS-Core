@@ -29,5 +29,5 @@ if exist "%flag_folder%" (
 ) else (
 	call mod_tee Folder Doesn't Exist, Ignoring /color 0E
 )
-endlocal
+endlocal & set errorct=%errorct%
 exit /b

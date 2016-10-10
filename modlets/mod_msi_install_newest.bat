@@ -20,5 +20,5 @@ if NOT "[%newestfile%]"=="[]" (
 	set /a errorct+=1
 	call mod_pause 
 )
-endlocal
+endlocal & set errorct=%errorct%
 exit /b

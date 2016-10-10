@@ -20,7 +20,7 @@ if (Test-Path room_$($args[1]).ini) {
 ## Log Setup
 $scriptName + ":  ================== Script Start ==================" | out-file $env:temp\updater.log -Append -encoding ASCII
 
-$scriptName + ": " + $scriptName + " Version: 1.3.1 (PS)" | out-file $env:temp\updater.log -Append -encoding ASCII
+$scriptName + ": " + $scriptName + " Version: 1.4 (PS)" | out-file $env:temp\updater.log -Append -encoding ASCII
 $scriptName + ": Computer Name: " + $env:computername | out-file $env:temp\updater.log -Append -encoding ASCII
 $scriptName + ": IP Addresses: " | out-file $env:temp\updater.log -Append -encoding ASCII
 $Networks = Get-WmiObject Win32_NetworkAdapterConfiguration | ? {$_.IPEnabled}
@@ -62,6 +62,8 @@ if ($PSVersionTable.PSVersion.Major -lt 3) {
 	$PSScriptRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 }
 $env:Path += ";" + $PSScriptRoot + "\extensions\" + ";" + $PSScriptRoot + "\modlets\"
+$extensions = $PSScriptRoot + "\extensions\"
+$modlets = $PSScriptRoot + "\modlets\"
 
 ## Enumerate Extensions
 Write-Host Extensions:
@@ -132,20 +134,38 @@ foreach ($i in $scripts) {
 	Write-Host Start    : $modulestarttime
 	$scriptName + ": Start    : " + $modulestarttime | out-file $env:temp\updater.log -Append -encoding ASCII
 	## run module
-	If (Test-Path $modules$i\$i.ps1) {
-		Set-Location $modules$i
-		$result = Start-Process cmd.exe -ArgumentList "/C title MADS_module:", $i,"& Powershell.exe -ExecutionPolicy Bypass -File",($i + ".ps1") -Wait -PassThru
-		$exists = $TRUE
-		Set-Location (Split-Path $MyInvocation.MyCommand.Path)
+	$exists = $FALSE
+	if (Test-Path $modules$i\$i.ini) {
+		if ((Test-Path ($extensions + "Shim.ps1")) -Or (Test-Path ($modlets + "Shim.ps1"))){
+			$result = Start-Process cmd.exe -ArgumentList "/C title MADS_module: ", $i,"& Powershell.exe -ExecutionPolicy Bypass -File Shim.ps1 ", $i -Wait -PassThru
+			$exists = $TRUE
+			Set-Location (Split-Path $MyInvocation.MyCommand.Path)
+		}
+		ElseIf ((Test-Path ($extensions + "Shim.bat")) -Or (Test-Path ($modlets + "Shim.bat"))) {
+			$result = Start-Process cmd.exe -ArgumentList "/C title MADS_module:", $i,"& Shim.bat", $i -Wait -PassThru
+			$exists = $TRUE
+			Set-Location (Split-Path $MyInvocation.MyCommand.Path)
+		}
+		Else {
+			$exists = $FALSE
+		}
 	}
-	ElseIf (Test-Path $modules$i\$i.bat){
-		Set-Location $modules$i
-		$result = Start-Process cmd.exe -ArgumentList "/C title MADS_module:", $i,"&",($i + ".bat") -Wait -PassThru
-		$exists = $TRUE
-		Set-Location (Split-Path $MyInvocation.MyCommand.Path)
-	}
-	Else {
-		$exists = $FALSE
+	if (!$exists){
+		If (Test-Path $modules$i\$i.ps1) {
+			Set-Location $modules$i
+			$result = Start-Process cmd.exe -ArgumentList "/C title MADS_module: ", $i,"& Powershell.exe -ExecutionPolicy Bypass -File",($i + ".ps1") -Wait -PassThru
+			$exists = $TRUE
+			Set-Location (Split-Path $MyInvocation.MyCommand.Path)
+		}
+		ElseIf (Test-Path $modules$i\$i.bat){
+			Set-Location $modules$i
+			$result = Start-Process cmd.exe -ArgumentList "/C title MADS_module: ", $i,"&",($i + ".bat") -Wait -PassThru
+			$exists = $TRUE
+			Set-Location (Split-Path $MyInvocation.MyCommand.Path)
+		}
+		Else {
+			$exists = $FALSE
+		}
 	}
 	## Set the end time
 	$moduleendtime = Get-Date
