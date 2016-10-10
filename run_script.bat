@@ -20,6 +20,10 @@ echo Administrative permissions required. Detecting permissions...
 net session >nul 2>&1
 if ERRORLEVEL 1 (
 	echo Failure: Current permission inadequate
+	REM Create temp directory if it doesn't exist
+	if not exist "%temp%\MADS\" (
+		mkdir "%temp%\MADS\"
+	)
 	REM Create elevate.vbs to get us admin
 	echo Set UAC = CreateObject^("Shell.Application"^) > %temp%\MADS\elevate.vbs
 	echo UAC.ShellExecute WScript.Arguments^(0^), "", "", "runas", 1 >> %temp%\MADS\elevate.vbs
