@@ -25,10 +25,12 @@ if "!_path!" == "" (
 )
 if %depth%==1 (
 	echo Executing Self Test...
+	rem check hashes if we can and load them into "checked"
+	call :hashing
 ) else (
 	if "[%debug%]"=="[true]" echo DEBUG: Self on "%~1" at level %depth%
 )
-rem check for "over depth" idealy you shouldn't go over 4 e.g. copy-newest->copy->tee->echo but there's plenty of breathing room if needed
+rem check for "over depth" idealy you shouldn't go over 5 e.g. copy-newest->copy->tee->echo->flag_check but there's plenty of breathing room if needed
 if %depth% geq 10 (
 	echo Recusion limit reached, please check scripts for dependency loops
 	pause
@@ -181,10 +183,22 @@ if exist %1 (
 if %depth%==1 (
 	if %spinnerenabled%==true call mod_spinner /clear
 	echo The Self Check Has Passed
+	if not exist "%temp%\MADS\SelfTest\" (
+		mkdir "%temp%\MADS\SelfTest\"
+	)
+	echo %checked%> "%temp%\MADS\SelfTest\%~n1.requirements"
 )
 set /a depth-=1
 endlocal & set "checked=%checked% %~n1" & if %spinnerenabled%==true set "spinner=%spinner%"
 goto :EOF
 
-:flag_check
+:hashing
+"%temp%\MADS\SelfTest\%~n1.requirements"
+:hashing2
+setlocal
+for /f tokens=1,2* %%i in ("%requirements%") do (
+	
+)
+endlocal
+exit /b
 

@@ -139,7 +139,7 @@ for %%x in (%scripts%) do (
 	echo %~n0: Start    : !date! @ !MODULESTARTTIME! >> %temp%\updater.log
 	cd %%x
 	if exist %%x.ini (
-		start "MADS_module: %%x" /wait Shim.bat %%x
+		start "MADS_module: %%x" /wait Shim.bat /module %%x /mode run
 		if ERRORLEVEL 1 (
 			echo %%x module done with 1 or more errors
 			echo %~n0: %%x module done with 1 or more errors >> %temp%\updater.log

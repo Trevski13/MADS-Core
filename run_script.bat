@@ -13,7 +13,7 @@ set room=
 set mode=
 
 REM Change to the script's directory
-cd /d %~dp0
+pushd %~dp0
 
 REM Check for Admin Permissions
 echo Administrative permissions required. Detecting permissions...
@@ -230,4 +230,5 @@ timeout 2
 if "[%core_location:~0,2%]" == "[\\]" (
 	net use %drive_letter%: /delete /yes
 )
+popd
 exit %error%
