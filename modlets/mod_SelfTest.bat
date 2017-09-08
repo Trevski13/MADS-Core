@@ -193,6 +193,7 @@ endlocal & set "checked=%checked% %~n1" & if %spinnerenabled%==true set "spinner
 goto :EOF
 
 :hashing
+exit /b
 "%temp%\MADS\SelfTest\%~n1.requirements"
 :hashing2
 setlocal

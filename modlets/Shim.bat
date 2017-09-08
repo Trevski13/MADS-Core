@@ -119,7 +119,7 @@ if %requiresTesting%==true (
 	rem check for batch tester
 	call s_which mod_SelfTest.bat
 	if not "[!_path!]" == "[]" (
-		call "%temp%\MADS\built\%module%.verified" "%temp%\MADS\built\%module%.bat"
+		call mod_SelfTest "%temp%\MADS\built\%module%.bat"
 	) else (
 		echo Initialization failed because modSelfTest wasn't found
 		pause

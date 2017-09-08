@@ -18,7 +18,7 @@ set "flag_default="
 set "raw=false"
 :top
 set "flag=false"
-rem set the option to the current value, note that we remove surrounding "s here via "%%~"
+rem set the option to the current value, note that we remove surrounding "s here via "%%~" note that is actually a single percent but I have to put two to no break
 set "option=%1"
 rem check if any peramiters are left
 if not defined option goto empty
