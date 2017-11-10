@@ -42,7 +42,7 @@ if %flag%==false (
 		rem then in the call statement it becomes: call set %workaround% which becomes: set option=%%1, which becomes: set option=whatever %%1 equals
 		rem without the call statement this line could break even if it isn't run due to batch's handling of "(" and ")" in if statements
 		set workaround="option=%%1"
-		echo. > nul & call set %%workaround%%
+		call set %%workaround%%
 	)
 )
 

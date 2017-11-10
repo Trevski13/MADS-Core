@@ -2,6 +2,7 @@
 
 rem Initialization
 rem check if we have s_which
+echo.Shimming...
 set s_which=false
 call s_which s_which.bat
 cls
@@ -76,7 +77,8 @@ if not exist "%temp%\MADS\built\%module%.bat" (
 )
 endlocal & set requiresBuilding=%requiresBuilding%
 if %requiresBuilding% == true (
-	del /q "%temp%\MADS\built\%module%.verified"
+	del /q "%temp%\MADS\built\%module%.verified" >nul 2>&1
+	echo.Building...
 	@(
 	echo/@echo off
 	echo/setlocal
@@ -117,6 +119,7 @@ if not exist "%temp%\MADS\built\%module%.verified" (
 )
 if %requiresTesting%==true (
 	rem check for batch tester
+	echo.Testing...
 	call s_which mod_SelfTest.bat
 	if not "[!_path!]" == "[]" (
 		call mod_SelfTest "%temp%\MADS\built\%module%.bat"

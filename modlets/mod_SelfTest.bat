@@ -3,6 +3,13 @@ setlocal EnableDelayedExpansion
 rem increment the depth counter (aka how manytimes we've called ourselves), as an abnormal increase in this may indicate a dependency loop.
 if NOT defined depth (
 	set depth=1
+	set "builtin="
+	for /f "tokens=1 usebackq" %%c in (`help`) do (
+		echo %%c|findstr /rc:"^[ABCDEFGHIJKLMNOPQRSTUVWXYZ]*$" > nul
+		if NOT ERRORLEVEL 1 (
+			set builtin=!builtin! %%c
+		)
+	)
 ) else (
 	set /a depth+=1
 )
@@ -26,7 +33,7 @@ if "!_path!" == "" (
 if %depth%==1 (
 	echo Executing Self Test...
 	rem check hashes if we can and load them into "checked"
-	call :hashing
+	rem call :hashing
 ) else (
 	if "[%debug%]"=="[true]" echo DEBUG: Self on "%~1" at level %depth%
 )
@@ -79,11 +86,14 @@ if exist %1 (
 							dir /b %~dp1 | findstr /I /C:"%%j" >nul
 						)
 						if ERRORLEVEL 1 (
-							if "[%debug%]"=="[true]" echo DEBUG: %%j on line !line! of %~1 doesn't exist
-							echo %%j was not found, please check the script for typos
-							echo or the components directory for missing components
-							pause
-							exit 1
+							echo %builtin%| findstr /I /C:"%%j" >nul
+							if ERRORLEVEL 1 (
+								if "[%debug%]"=="[true]" echo DEBUG: %%j on line !line! of %~1 doesn't exist
+								echo %%j was not found, please check the script for typos
+								echo or the components directory for missing components
+								pause
+								exit 1
+							)
 						)
 					)
 					if "[%debug%]"=="[true]" echo DEBUG: Now Checking Flags for %%j
@@ -193,7 +203,6 @@ endlocal & set "checked=%checked% %~n1" & if %spinnerenabled%==true set "spinner
 goto :EOF
 
 :hashing
-exit /b
 "%temp%\MADS\SelfTest\%~n1.requirements"
 :hashing2
 setlocal
