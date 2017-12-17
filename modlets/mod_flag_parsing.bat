@@ -20,7 +20,7 @@ set "raw=false"
 set "flag=false"
 rem set the option to the current value, note that we remove surrounding "s here via "%%~" note that is actually a single percent but I have to put two to no break
 set "option=%1"
-rem check if any peramiters are left
+rem check if any parameters are left
 if not defined option goto empty
 set "option=%~1"
 if "[%debug%]"=="[true]" echo DEBUG: Analysing input %~1
@@ -55,9 +55,9 @@ if %flag%==false (
 		if "[%debug%]"=="[true]" echo DEBUG: setting flag_%currentflag%
 		set "flag_%currentflag%=%option%"
 	) else (
-		rem there is, so we'll concatinate the old value with the new one
+		rem there is, so we'll concatenate the old value with the new one
 		if "[%debug%]"=="[true]" echo DEBUG: adding to flag_%currentflag%
-		rem This call statement allows the "double processing" of the varaibles without using delayed expansion which would require a setlocal statement.
+		rem This call statement allows the "double processing" of the variables without using delayed expansion which would require a setlocal statement.
 		rem This setlocal, when ended with endlocal, would wipe any variables set by this flag parsing code.
 		rem also the echo. is to prevent the selftest from attempting to look up "set" which would fail
 		echo. > nul & call set "flag_%currentflag%=%%flag_%currentflag%%% %option%"
@@ -117,7 +117,7 @@ rem else (just to make it look good)
 				echo. > nul & call set "flag_%%currentflag%%=%%withoutquotes%%"
 			) else (
 				endlocal
-				rem there is, so we'll concatinate the old value with the new one
+				rem there is, so we'll concatenate the old value with the new one
 				if "[%debug%]"=="[true]" call echo DEBUG: adding %%withoutquotes%% to flag_%%currentflag%%
 				echo. > nul & call set "flag_%%currentflag%%=%%flag_%currentflag%%% %%withoutquotes%%"
 			)

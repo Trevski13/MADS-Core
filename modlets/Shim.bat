@@ -73,6 +73,8 @@ if not exist "%temp%\MADS\built\%module%.bat" (
 		) else (
 			set requiresBuilding=true
 		)
+	) else (
+		set requiresBuilding=true
 	)
 )
 endlocal & set requiresBuilding=%requiresBuilding%

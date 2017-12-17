@@ -12,6 +12,7 @@ rem Check Our Own Flags manually
 if NOT defined flag_type ( 
 	if "[%debug%]"=="[true]" echo DEBUG: flag "type" not defined.
 	echo Runtime Error: Flag parsing check failed.
+	echo Error Details: Type Flag was not defined.
 	pause
 	exit 1
 ) else (
@@ -27,6 +28,7 @@ if NOT defined flag_type (
 if %typeIsValid%==false (
 	if "[%debug%]"=="[true]" echo DEBUG: flag "type" has invalid value "%flag_type%"
 	echo Runtime Error: Flag parsing check failed.
+	echo Error Details: Type Flag "%flag_type%" is invalid.
 	pause
 	exit 1
 )
@@ -35,6 +37,7 @@ if "[%debug%]"=="[true]" echo DEBUG: flag "type" is valid
 if not defined flag_flag (
 	if "[%debug%]"=="[true]" echo DEBUG: flag "flag" not defined.
 	echo Runtime Error: Flag parsing check failed.
+	echo Error Details: Flag name Flag was not defined.
 	pause
 	exit 1
 )
@@ -83,7 +86,8 @@ if "[%type%]"=="[boolean]" (
 			if NOT !flagvalue!==false (
 				if "[%debug%]"=="[true]" echo DEBUG: "!flagvalue!" is Not true or false
 				echo Runtime Error: Unexpected Flag Value
-				echo Enable Debugging for detailed Errors
+				echo Error Details: "!flagvalue!" was unexpected at this time, expected true or false.
+				echo Enable Debugging for extended error details.
 				pause
 				exit 1
 			)
@@ -92,6 +96,7 @@ if "[%type%]"=="[boolean]" (
 		if NOT defined defaultValue (
 			if "[%debug%]"=="[true]" echo DEBUG: flag_%flag% Not Defined and no Default Value Given
 			echo Runtime Error: Unexpected Flag Value
+			echo Error Details: /%flag% is a required flag but was undefined
 			echo Enable Debugging for detailed Errors
 			pause
 			exit 1
@@ -109,6 +114,7 @@ if "[%type%]"=="[string]" (
 		if NOT defined defaultValue (
 			if "[%debug%]"=="[true]" echo DEBUG: Not Defined and no Default Value Given
 			echo Runtime Error: Unexpected Flag Value
+			echo Error details: /%flag% is a required flag but was undefined
 			echo Enable Debugging for detailed Errors
 			pause
 			exit 1
@@ -136,6 +142,7 @@ if "[%type%]"=="[int]" (
 			if "[%debug%]"=="[true]" echo DEBUG: Not Defined and no Default Value Given
 			echo Runtime Error: Unexpected Flag Value
 			echo Enable Debugging for detailed Errors
+			echo Error details: /%flag% is a required flag but was undefined
 			pause
 			exit 1
 		) else (
@@ -153,6 +160,7 @@ if "[%type%]"=="[file]" (
 		if ERRORLEVEL 1 (
 			if "[%debug%]"=="[true]" echo DEBUG: "!flag_%flag%!" is not a file
 			echo Runtime Error: Unexpected Flag Value
+			echo Error Details: /%flag% has value "!flag_%flag%!" which is not a valid file
 			echo Enable Debugging for detailed Errors
 			pause
 			exit 1
@@ -161,6 +169,7 @@ if "[%type%]"=="[file]" (
 		if NOT defined defaultValue (
 			if "[%debug%]"=="[true]" echo DEBUG: Not Defined and no Default Value Given
 			echo Runtime Error: Unexpected Flag Value
+			echo Error details: /%flag% is a required flag but was undefined
 			echo Enable Debugging for detailed Errors
 			pause
 			exit 1
@@ -186,4 +195,4 @@ REM call mod_flag_check /flag flag /type string
 REM call mod_flag_check /flag type /type enum
 REM call mod_flag_check /flag list /type boolean /defaultValue false
 REM call mod_flag_check /flag acceptedValues /type string /list /defaultValue
-REM call mod_flag_check /flag defaultValue /type string /defaultValue
+REM call mod_flag_check /flag defaultValue /type string /defaultValues
