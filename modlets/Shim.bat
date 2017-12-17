@@ -38,8 +38,8 @@ if not "[%_path%]" == "[]" (
 	set "hash="
 )
 
-call :run %flag_module%
-exit %errorlevel%
+call :run "%flag_module%"
+exit /b %errorlevel%
 
 :run
 set "module=%~n1"
@@ -93,7 +93,8 @@ if %requiresBuilding% == true (
 	)
 	echo/rem End Script
 	echo/setlocal enabledelayedexpansion
-	echo/call cmd /q /c mod_footer ^& exit /b %%errorct%%
+	rem echo/call cmd /q /c mod_footer ^& exit /b %%errorct%%
+	echo/mod_footer
 	echo/endlocal
 	echo/echo The Script did not terminate correctly
 	echo/pause
@@ -140,4 +141,4 @@ if %requiresTesting%==true (
 if %flag_mode% == run (
 	call %temp%\MADS\built\%module%.bat
 )
-endlocal & exit %errorlevel%
+endlocal & exit /b %errorlevel%

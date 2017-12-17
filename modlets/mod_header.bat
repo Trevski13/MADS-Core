@@ -47,7 +47,9 @@ if defined flag_preload (
 	set preload=%flag_preload%
 )
 rem change directories and clear screen
-cd %~dp1
+if NOT "[%~0]" == "[]" (
+	cd /d %~dp1
+)
 if "[%debug%]"=="[true]" ( pause )
 cls
 if "[%debug%]"=="[true]" echo DEBUG: logfile is %logfile%

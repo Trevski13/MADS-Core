@@ -76,42 +76,42 @@ if %is_error%==true (
 	if %flag_silent%==false (
 		if "[%flag_description%]"=="[ ]" (
 			if %flag_acceptable-error%==true (
-				call mod_tee ERROR: %flag_error% /color 0E
+				call mod_tee /text:ERROR: /text:%flag_error% /color 0E
 			) else (
 				set /a errorct+=1
-				call mod_tee ERROR: %flag_error% /color 0C
+				call mod_tee /text:ERROR: /text:%flag_error% /color 0C
 			)
 		) else (
 			if %flag_acceptable-error%==true (
-				call mod_tee %flag_description% ERROR: %flag_error% /color 0E
+				call mod_tee /text:%flag_description% ERROR: /text:%flag_error% /color 0E
 			) else (
 				set /a errorct+=1
-				call mod_tee %flag_description% ERROR: %flag_error% /color 0C
+				call mod_tee /text:%flag_description% ERROR: /text:%flag_error% /color 0C
 			)
 		)
 	) else (
 		if "[%flag_description%]"=="[ ]" (
 			if %flag_acceptable-error%==true (
-				call mod_log ERROR: %flag_error% /color 0E
+				call mod_log /text:ERROR: /text:%flag_error% /color 0E
 			) else (
 				set /a errorct+=1
-				call mod_log ERROR: %flag_error% /color 0C
+				call mod_log /text:ERROR: /text:%flag_error% /color 0C
 			)
 		) else (
 			if %flag_acceptable-error%==true (
-				call mod_log %flag_description% ERROR: %flag_error% /color 0E
+				call mod_log /text:%flag_description% ERROR: /text:%flag_error% /color 0E
 			) else (
 				set /a errorct+=1
-				call mod_log %flag_description% ERROR: %flag_error% /color 0C
+				call mod_log /text:%flag_description% ERROR: /text:%flag_error% /color 0C
 			)
 		)
 	)
 ) else (
 	if %flag_silent%==false (
 		if "[%flag_description%]"=="[ ]" (
-			call mod_tee SUCCESS: %flag_error% /color 0A
+			call mod_tee /text:SUCCESS: /text:%flag_error% /color 0A
 		) else (
-			call mod_tee %flag_description% SUCESS: %flag_error% /color 0A
+			call mod_tee /text:%flag_description% SUCESS: /text:%flag_error% /color 0A
 		)
 	)
 )

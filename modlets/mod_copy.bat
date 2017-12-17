@@ -9,9 +9,9 @@ call mod_flag_check /type file /flag file
 call mod_flag_check /type dir /flag directory
 call mod_flag_check /type file /flag newname /defaultvalue " "
 call mod_flag_check /type dir /flag destination
-call mod_flag_check /type string /flag name /defalutvalue
+call mod_flag_check /type string /flag name /defaultvalue
 
-if "[%flag_newname%]" == "[ ]"(
+if "[%flag_newname%]" == "[ ]" (
 	set flag_newname=%flag_file%
 )
 

@@ -11,16 +11,16 @@ call mod_flag_check /type string /flag name /defaultValue
 call mod_flag_check /type boolean /flag passive /defaultValue true
 call mod_flag_check /type string /flag args /defaultValue " "
 
-if %flag_passive%==true (
+if "[%flag_passive%]"=="[true]" (
 	set "passive=/passive"
 ) else (
 	set "passive="
 )
-if NOT %flag_name%==true (
+if NOT "[%flag_name%]"=="[true]" (
 	call mod_echo "Uninstalling %flag_name%..."
 	call mod_log "Uninstalling %flag_name% via %flag_file%"
 ) else (
-	call mod_log "Uninstalling GUID %flag_file%"
+	call mod_log "Uninstalling %flag_file%"
 )
 start "" /wait msiexec /x %flag_file% %passive% %flag_args%
 call mod_error /error %errorlevel% /alternate-successes "3010,1605"

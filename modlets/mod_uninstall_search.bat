@@ -16,13 +16,13 @@ set "uninstallstring="
 
 echo Looking for uninstall strings for %flag_name%
 echo Part 1 of 2
-echo/ > nul & call :uninstall %flag_name% "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+echo/ > nul & call :uninstall "%flag_name%" "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 if errorlevel 1 (
 	exit /b
 )
 call mod_spinner /clear
 echo Part 2 of 2
-echo/ > nul & call :uninstall %flag_name% "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+echo/ > nul & call :uninstall "%flag_name%" "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
 if errorlevel 1 (
 	exit /b
 )
@@ -32,9 +32,9 @@ if %flag_match-all%==false (
 		echo %saveduninstallstring% | findstr /i /c:"MsiExec.exe" >nul
 		if Not ERRORLEVEL 1 (
 			for /f "usebackq tokens=2 delims={}" %%i in (`echo %saveduninstallstring%`) do (
-				call mod_echo Uninstalling %productname%...
+				rem call mod_echo Uninstalling %productname%...
 				call mod_log Uninstalling %productname% via {%%i}
-				call mod_uninstall_guid /guid {%%i}
+				call mod_msi_uninstall /file {%%i} /name %productname% /args:/norestart
 			)
 		) else (
 			if %flag_allow-non-msi%==true (
@@ -77,9 +77,9 @@ for /f "tokens=*" %%I in ('reg query "%~2"') do (
 					echo !uninstallstring! | findstr /i /c:"MsiExec.exe" >nul
 					if Not ERRORLEVEL 1 (
 						for /f "usebackq tokens=2 delims={}" %%i in (`echo !uninstallstring!`) do (
-							call mod_echo Uninstalling !productname!...
+							rem call mod_echo Uninstalling !productname!...
 							call mod_log Uninstalling !productname! via {%%i}
-							call mod_uninstall_guid /guid {%%i}
+							call mod_msi_uninstall /file {%%i} /name !productname! /args:/norestart
 						)
 					) else (
 						if %flag_allow-non-msi%==true (

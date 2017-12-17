@@ -52,7 +52,7 @@ if "[%flag_args:~0,1%]"=="[ ]" (
 )
 
 start "" %wait% /d "%flag_workingdirectory%" "%flag_directory%%flag_file%" %flag_args%
-call mod_error /error %errorlevel%
+call mod_error /error:%errorlevel%
 REM if ERRORLEVEL 1 (
 	REM if %errorlevel% NEQ 3010 (
 		REM call mod_tee Error: %errorlevel% /color 0C
