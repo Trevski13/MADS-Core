@@ -72,5 +72,5 @@ rem tasklist /FI "PID eq %PID%" 2>NUL | find /i /n "%PID%" > nul
 rem if NOT ERRORLEVEL 1 goto pidcheck
 rem if NOT "[%ChildPIDs%]"=="[ ]" goto pidcheck
 call mod_tee Program Exited /color 0A
-endlocal
+endlocal & set errorct=%errorct%
 exit/b

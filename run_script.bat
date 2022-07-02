@@ -2,6 +2,7 @@
 title MADS_init
 
 REM This script establishes a connection to the core file which then kicks off the deployment process
+REM VERSION: V2
 
 REM Defaults:
 REM This section can be used to create a single file launcher without the need for a settings.ini file
@@ -10,30 +11,35 @@ set core_location=
 set username=
 set password=
 set room=
+set scripts=
 set mode=
-
+set debug=false
 REM Change to the script's directory
-cd /d %~dp0
+pushd %~dp0
 
 REM Check for Admin Permissions
 echo Administrative permissions required. Detecting permissions...
 net session >nul 2>&1
 if ERRORLEVEL 1 (
 	echo Failure: Current permission inadequate
+	REM Create temp directory if it doesn't exist
+	if not exist "%temp%\MADS\" (
+		mkdir "%temp%\MADS\"
+	)
 	REM Create elevate.vbs to get us admin
-	echo Set UAC = CreateObject^("Shell.Application"^) > %temp%\elevate.vbs
-	echo UAC.ShellExecute WScript.Arguments^(0^), "", "", "runas", 1 >> %temp%\elevate.vbs
+	echo Set UAC = CreateObject^("Shell.Application"^) > %temp%\MADS\elevate.vbs
+	echo UAC.ShellExecute WScript.Arguments^(0^), "", "", "runas", 1 >> %temp%\MADS\elevate.vbs
 	REM Test if network share
 	net use | findstr /C:%~d0 > nul
 	if NOT ERRORLEVEL 1 (
 		REM Network share confirmed
-		copy %~nx0 %temp%\%~nx0
-		copy settings.ini %temp%\settings.ini 2>nul
-		set location=%temp%\%~nx0
+		copy %~nx0 %temp%\MADS\%~nx0
+		copy settings.ini %temp%\MADS\settings.ini 2>nul
+		set location=%temp%\MADS\%~nx0
 	) else (
 		set location=%~f0
 	)
-	call start "" /wait %SystemRoot%\System32\wscript.exe %temp%\elevate.vbs "%%location%%"
+	call start "" /wait %SystemRoot%\System32\wscript.exe %temp%\MADS\elevate.vbs "%%location%%"
 	if ERRORLEVEL 1 (
 		echo Error Getting Admin, please launch manually
 		pause
@@ -87,6 +93,15 @@ if exist "settings.ini" (
 		)
 	)
 )
+
+REM Overrides:
+REM This section can be used to override settings in a settings.ini file (use with caution)
+REM set drive_letter=
+REM set core_location=
+REM set username=
+REM set password=
+REM set room=
+REM set mode=
 
 REM Build a mount command:
 REM This section constructs a "mount command" which will be used to mount a network share
@@ -149,7 +164,9 @@ if "[%core_location:~0,2%]" == "[\\]" (
 
 REM Prompt for Missing Room Name:
 if NOT defined room (
-	set /p "room=room: "
+	if NOT defined scripts (
+		set /p "room=room: "
+	)
 )
 cls
 
@@ -185,7 +202,7 @@ if "[%mode%]" == "[auto]" (
 REM Check for MADS_core:
 if "[%mode%]" == "[powershell]" (
 	if NOT exist MADS_core.ps1 (
-		echo ERROR: MADS_core.ps1 not found please check directory
+		echo ERROR: MADS_core.ps1 not found in %core_location% please check directory
 		if "[%core_location:~0,2%]" == "[\\]" (
 			net use %drive_letter%: /delete /yes
 		)
@@ -194,7 +211,7 @@ if "[%mode%]" == "[powershell]" (
 	)
 ) else (
 	if NOT exist MADS_core.bat (
-		echo ERROR: MADS_core.bat not found please check directory
+		echo ERROR: MADS_core.bat not found in %core_location% please check directory
 		if "[%core_location:~0,2%]" == "[\\]" (
 			net use %drive_letter%: /delete /yes
 		)
@@ -203,20 +220,30 @@ if "[%mode%]" == "[powershell]" (
 	)
 )
 REM Run core
-echo Launching MADS room: %room%...
+if defined room (
+	set args=/room %room%
+) else (
+	if defined scripts (
+		set args=/direct %scripts%
+	) else (
+		set args=/manual
+	)
+)
+echo Launching MADS: %args%...
 if exist C:\Windows\Sysnative\ (
 	if "[%mode%]" == "[powershell]" (
-		start "" /wait %systemroot%\Sysnative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File .\MADS_core.ps1 /room %room%
+		start "" /wait %systemroot%\Sysnative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File .\MADS_core.ps1 %args%
 	) else (
-		start "" /wait C:\Windows\Sysnative\cmd.exe /c MADS_core.bat /room %room%
+		start "" /wait C:\Windows\Sysnative\cmd.exe /c MADS_core.bat %args%
 	)
 ) else (
 	if "[%mode%]" == "[powershell]" (
-		start "" /wait %systemroot%\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File .\MADS_core.ps1 /room %room%
+		start "" /wait %systemroot%\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File .\MADS_core.ps1 %args%
 	) else (
-		start "" /wait C:\Windows\System32\cmd.exe /c MADS_core.bat /room %room%
+		start "" /wait C:\Windows\System32\cmd.exe /c MADS_core.bat %args%
 	)
 )
+
 
 set error=%errorlevel%
 cd /d %~dp0
@@ -226,4 +253,5 @@ timeout 2
 if "[%core_location:~0,2%]" == "[\\]" (
 	net use %drive_letter%: /delete /yes
 )
+popd
 exit %error%

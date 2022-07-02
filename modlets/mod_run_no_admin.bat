@@ -24,7 +24,7 @@ if ERRORLEVEL 1 (
 if not exist %temp%\updater\%~n0\test_success (
 	call mod_tee Testing Interprocess Communications...
 	if not exist %temp%\updater\%~n0\ (
-		call mod_make_directory %temp%\updater\%~n0\
+		call mod_make_directory /directory %temp%\updater\%~n0\
 		if not %errorct%==!errorct! (
 			call mod_tee Error: Interprocess Communication Test Failed /color 0C 
 			call mod_pause
@@ -58,12 +58,12 @@ call mod_flag_check /type string /flag name /defaultValue
 call mod_flag_check /type dir /flag directory /defaultValue .\
 call mod_flag_check /type string /flag args /defaultValue " "
 call mod_flag_check /type int /flag waittime /defaultValue " "
-call mod_flag_check /type dir /flag workingdirectory /defaultValue true
+call mod_flag_check /type dir /flag workingdirectory /defaultValue .\
 call mod_flag_check /type boolean /flag cmd /defaultValue false
 
-if "[%flag_workingdirectory%]"=="[true]" (
-	set "flag_workingdirectory=%flag_directory%"
-)
+rem if "[%flag_workingdirectory%]"=="[%CD%]" (
+rem 	set "flag_workingdirectory=%flag_directory%"
+rem )
 
 if NOT "[%flag_name%]"=="[true]" (
 	call mod_echo Running %flag_name%...
@@ -89,9 +89,9 @@ if %flag_cmd%==true (
 )
 setlocal disabledelayedexpansion
 if %flag_cmd%==true (
-	start "" /min runfromprocess-x64.exe explorer.exe cmd.exe /C start "updater_part" cmd.exe /v:on /C cd %flag_workingdirectory% ^^^& "%flag_directory%%flag_file%" %flag_args% ^^^& echo/Return Code: ^^^^^^!errorlevel^^^^^^! ^^^& if errorlevel 1 ^^^( echo/^^^^^^!errorlevel^^^^^^!^^^>%temp%\updater\%~n0\results ^^^& pause ^^^& timeout /nobreak 1 ^^^>nul ^^^& waitfor /s %computername% /si realdeal ^^^) else ^^^( echo/^^^^^^!errorlevel^^^^^^!^^^>%temp%\updater\%~n0\results ^^^& timeout /nobreak 5 ^^^>nul ^^^& waitfor /s %computername% /si realdeal ^^^)
+	start "" /min runfromprocess-x64.exe explorer.exe cmd.exe /C start "MADS_part"      cmd.exe /v:on /C             cd /d %flag_workingdirectory% ^^^& "%flag_directory%%flag_file%" %flag_args% ^^^& echo/Return Code: ^^^^^^!errorlevel^^^^^^! ^^^& if errorlevel 1 ^^^( echo/^^^^^^!errorlevel^^^^^^!^^^>%temp%\updater\%~n0\results ^^^& pause ^^^& timeout /nobreak 1 ^^^>nul ^^^& waitfor /s %computername% /si realdeal ^^^) else ^^^( echo/^^^^^^!errorlevel^^^^^^!^^^>%temp%\updater\%~n0\results ^^^& timeout /nobreak 5 ^^^>nul ^^^& waitfor /s %computername% /si realdeal ^^^)
 ) else (
-	start "" /min runfromprocess-x64.exe explorer.exe cmd.exe /C start "" /min cmd.exe /v:on /C start "" /wait /d "%flag_workingdirectory%" "%flag_directory%%flag_file%" %flag_args% ^^^&  if errorlevel 1 ^^^( echo/^^^^^^!errorlevel^^^^^^!^^^>%temp%\updater\%~n0\results ^^^& timeout /nobreak 1 ^^^>nul ^^^& waitfor /s %computername% /si realdeal ^^^) else ^^^( echo/^^^^^^!errorlevel^^^^^^!^^^>%temp%\updater\%~n0\results ^^^& timeout /nobreak 1 ^^^>nul ^^^& waitfor /s %computername% /si realdeal ^^^)
+	start "" /min runfromprocess-x64.exe explorer.exe cmd.exe /C start "MADS_part" /min cmd.exe /v:on /C start "" /wait /d "%flag_workingdirectory%"    "%flag_directory%%flag_file%" %flag_args% ^^^&                                                 if errorlevel 1 ^^^( echo/^^^^^^!errorlevel^^^^^^!^^^>%temp%\updater\%~n0\results ^^^&            timeout /nobreak 1 ^^^>nul ^^^& waitfor /s %computername% /si realdeal ^^^) else ^^^( echo/^^^^^^!errorlevel^^^^^^!^^^>%temp%\updater\%~n0\results ^^^& timeout /nobreak 1 ^^^>nul ^^^& waitfor /s %computername% /si realdeal ^^^)
 )
 endlocal
 if ERRORLEVEL 1 (
@@ -114,7 +114,7 @@ if not exist %temp%\updater\%~n0\results (
 set /p result=<%temp%\updater\%~n0\results
 if not %result%==0 (
 	call mod_tee Error: The running task ended with error %result% /color 0C
-	call mod_error %result%
+	call mod_error /error:%result%
 )
 call mod_delete /directory %temp%\updater\%~n0\ /file results /name old results file
 if %result%==0 (

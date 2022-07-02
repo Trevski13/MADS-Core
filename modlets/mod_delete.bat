@@ -19,7 +19,7 @@ if exist "%flag_directory%%flag_file%" 2>nul (
 	if exist "%flag_directory%%flag_file%" 2>nul (
 		call mod_tee Error Deleting File /color 0C
 		set /a errorct+=1
-		pause
+		call mod_pause
 	) else (
 		call mod_tee Removed Sucessfully /color 0A
 	)

@@ -11,14 +11,15 @@ call mod_echo Closing %flag_process%...
 call mod_log Closing %flag_process%
 tasklist /FI "IMAGENAME eq %flag_process%" 2>NUL | find /I /N "%flag_process%">NUL
 if NOT ERRORLEVEL 1 (
-	Taskkill /IM "%flag_process%"
+	Taskkill /IM "%flag_process%" >NUL
 	timeout /nobreak 2 > nul
 	tasklist /FI "IMAGENAME eq %flag_process%" 2>NUL | find /I /N "%flag_process%">NUL
 	if NOT ERRORLEVEL 1 (
 		call mod_echo Close Failed, Killing %flag_process%... /color 0E
 		call mod_log Close Failed, Killing %flag_process%
-		Taskkill /F /IM "%flag_process%"
+		Taskkill /F /IM "%flag_process%" >NUL
 		timeout /nobreak 2 > nul
+		tasklist /FI "IMAGENAME eq %flag_process%" 2>NUL | find /I /N "%flag_process%">NUL
 		if NOT ERRORLEVEL 1 (
 			call mod_tee Error: Unable to Close or Kill Task /color 0C
 			set /a errorct+=1

@@ -48,7 +48,7 @@ if defined flag_preload (
 )
 rem change directories and clear screen
 cd %~dp1
-if "[%debug%]"=="[true]" ( pause )
+if "[%debug%]"=="[true]" ( if "[%pause%]" == "[false]" ( timeout 15 ) else ( pause ) )
 cls
 if "[%debug%]"=="[true]" echo DEBUG: logfile is %logfile%
 if "[%debug%]"=="[true]" echo DEBUG: Scriptname is %scriptName%

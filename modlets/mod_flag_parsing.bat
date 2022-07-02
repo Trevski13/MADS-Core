@@ -9,7 +9,7 @@ rem it then sets flag_flagname to "true" or "false" if it lacks or contains "-" 
 rem Values input without an explicit flag are implicitly added to flag_default, so be aware that it's value will become "true" if the first argument is a flag
 if "[%debug%]"=="[true]" echo DEBUG: Begin flag_parsing
 rem Clear Old Flags
-for /f "usebackq delims==" %%i IN (`set ^| findstr /i /c:"flag_"`) do (
+for /f "usebackq delims==" %%i IN (`set ^| findstr /ibc:"flag_"`) do (
 	if "[%debug%]"=="[true]" echo DEBUG: clearing %%i
 	set "%%i="
 )
@@ -18,11 +18,11 @@ set "flag_default="
 set "raw=false"
 :top
 set "flag=false"
-rem set the option to the current value, note that we remove surrounding "s here via "%%~"
-set "option=%1"
+rem set the option to the current value, note that we remove surrounding "s here via "%%~" note that is actually a single percent but I have to put two to no break
+set "option=%~1"
 rem check if any peramiters are left
 if not defined option goto empty
-set "option=%~1"
+rem set "option=%~1"
 if "[%debug%]"=="[true]" echo DEBUG: Analysing input %~1
 rem check if flag based on "/" as first character
 if "[%option:~0,1%]"=="[/]" (
@@ -42,7 +42,7 @@ if %flag%==false (
 		rem then in the call statement it becomes: call set %workaround% which becomes: set option=%%1, which becomes: set option=whatever %%1 equals
 		rem without the call statement this line could break even if it isn't run due to batch's handling of "(" and ")" in if statements
 		set workaround="option=%%1"
-		echo. > nul & call set %%workaround%%
+		call set %%workaround%%
 	)
 )
 
@@ -147,7 +147,11 @@ if "[%debug%]"=="[true]" (
 		echo. > nul & call echo DEBUG: %%i="%%%%i%%"
 	)
 	echo DEBUG: Done Listing Flags
-	pause
+	if "[%pause%]" == "[false]" (
+		timeout 15
+	) else (
+		pause
+	)
 )
 if "[%debug%]"=="[true]" echo DEBUG: flag_parsing done
 :done

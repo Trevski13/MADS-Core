@@ -45,6 +45,6 @@ REM if ERRORLEVEL 1 (
 REM ) else (
 	REM call mod_tee "Extracted Sucessfully" /color 0A
 REM )
-endlocal
+endlocal & set errorct=%errorct%
 
 exit /b

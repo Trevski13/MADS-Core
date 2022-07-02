@@ -52,8 +52,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# Programs
+# Programs and extensions
 *.exe
+*.dll
 
 # =========================
 # Operating System Files

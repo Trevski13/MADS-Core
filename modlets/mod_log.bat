@@ -1,3 +1,4 @@
+@echo off
 setlocal enabledelayedexpansion
 if "[%debug%]"=="[true]" echo DEBUG: logging
 if not defined scriptName (

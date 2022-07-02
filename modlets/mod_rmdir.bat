@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-REM This modlet removes a directory if it isn't already removed
+REM Description This modlet removes a directory if it isn't already removed
 
 call mod_flag_parsing %*
 call mod_help "%~dpnx0" && exit /b
@@ -29,5 +29,5 @@ if exist "%flag_folder%" (
 ) else (
 	call mod_tee Folder Doesn't Exist, Ignoring /color 0E
 )
-endlocal
+endlocal & set errorct=%errorct%
 exit /b
